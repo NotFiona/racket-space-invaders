@@ -167,9 +167,22 @@
 
 ;; invader listofmissiles -> boolean
 ;; returns true if invader is hit by missile
-(define (is-hit? i lom) false) ;stub
-;; *****************
-;; *****************
+;(define (is-hit? i lom) false) ;stub
+(check-expect (is-hit? I1 empty) false)
+(check-expect (is-hit? I1 (cons M1 empty)) false)
+(check-expect (is-hit? I1 (cons M2 empty)) true)
+(check-expect (is-hit? I1 (cons M3 empty)) true)
+               
+(define (is-hit? i lom)
+  (cond [(empty? lom) false]
+        [else
+         (if (and
+              (>= (+ (missile-x (first lom)) HIT-RANGE) (invader-x i))
+              (<= (- (missile-x (first lom)) HIT-RANGE) (invader-x i))
+              (>= (+ (missile-y (first lom)) HIT-RANGE) (invader-y i))
+              (<= (- (missile-y (first lom)) HIT-RANGE) (invader-y i)))
+             true (is-hit? i (rest lom)))]))
+
 
 ;; listofinvaders -> listofinvaders
 ;; add new invader at random interval
